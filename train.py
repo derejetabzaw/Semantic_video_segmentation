@@ -4,7 +4,7 @@ from keyframe_selector import keyframe_selector as keyframe
 from features import convfeats,CSIFT,MFCC, clean_up
 import tensorflow as tf 
 from tensorflow.keras.layers import Concatenate
-from network import cnn_for_convfeats,cnn_for_csift,cnn_for_mfcc
+from network import cnn_for_convfeats,cnn_for_csift,cnn_for_mfcc,lstm_model
 
 
 dataset_directory = (os.getcwd() + '/' + "Dataset").replace("\\","/")
@@ -61,11 +61,8 @@ cnn_output_convfeats = np.array(cnn_for_convfeats(convolution_features_tensors))
 
 
 input_for_lstm = np.concatenate((cnn_output_mfcc.flatten(),cnn_output_csift.flatten(),cnn_output_convfeats.flatten()),axis = None)
-input_for_lstm = input_for_lstm.reshape(1,1,input_for_lstm.shape[0])
-# input_for_lstm = np.array((cnn_output_mfcc.flatten(),cnn_output_csift.flatten(),cnn_output_convfeats.flatten()))
+input_for_lstm = input_for_lstm.reshape(input_for_lstm.shape[0],1)
 
-lstm = tf.keras.layers.LSTM(500)
-output = lstm(input_for_lstm)
 
+output = lstm_model(input_for_lstm)
 print (output)
-print (output.shape)

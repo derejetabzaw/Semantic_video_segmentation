@@ -1,8 +1,7 @@
 from tensorflow.keras import layers, models
 from keras.models import Sequential
-from keras.activations import sigmoid 
-from keras.layers import CuDNNLSTM, Dropout
-from tensorflow.keras.layers import Flatten
+from keras.layers import LSTM
+from tensorflow.keras.layers import Flatten, Dense
 
 
 def cnn_for_mfcc(input):
@@ -44,10 +43,13 @@ def cnn_for_csift(input):
     model.summary()
     return model(input)
 
+def lstm_model(input):
+    model = Sequential()
+    model.add(LSTM(500, input_shape=input.shape, return_sequences = True))
+    model.add(LSTM(500, return_sequences = True))
+    model.add(LSTM(500))
+    model.add(Dense(1,activation = 'sigmoid'))
+    model.summary()
+    input = input.reshape(1,input.shape[0],input.shape[1])
+    return model(input)
 
-
-# def lstm_model(concatenated_input):
-#     classifier = Sequential()
-#     classifier.add(CuDNNLSTM(1, input_shape=(concatenated_input.shape), return_sequences=True))
-#     classifier.add(Dropout(0.2))
-#     return sigmoid(classifier(concatenated_input))
